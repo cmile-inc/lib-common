@@ -11,7 +11,7 @@ The `service-util` directory contains the main utilities and service implementat
 #### BigQuery
 
 - **BigQueryService**: Interface defining methods for querying and importing data into BigQuery.
-  - [BigQueryService.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/bigquery/BigQueryService.java)
+  - [BigQueryService.java]/service-util/src/main/java/com/cmile/serviceutil/bigquery/BigQueryService.java)
 
 - **BigQueryServiceImpl**: Implementation of `BigQueryService` providing methods to execute queries and import data.
   - [BigQueryServiceImpl.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/bigquery/BigQueryServiceImpl.java)
