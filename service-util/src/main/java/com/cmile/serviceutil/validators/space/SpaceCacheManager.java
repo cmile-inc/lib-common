@@ -16,10 +16,7 @@
 
 package com.cmile.serviceutil.validators.space;
 
-import com.cmile.platform.client.api.PlatformDeploymentUnitsApi;
-import com.cmile.platform.client.model.SpaceResponse;
 import com.cmile.serviceutil.apiinvoker.ApiInvoker;
-import com.cmile.serviceutil.auth.jwt.JwtTokenProvider;
 import com.cmile.serviceutil.cache.CacheManager;
 import com.cmile.serviceutil.gcp.GCPServiceProject;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,33 +27,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class SpaceCacheManager extends CacheManager<String, SpaceResponse> {
+public class SpaceCacheManager extends CacheManager<String, Object> {
 
   private final GCPServiceProject gcpServiceProject;
   private final ApiInvoker apiInvoker;
 
   private final ObjectMapper objectMapper;
+  private final SpacePlatformService platformService;
 
   @Autowired
   public SpaceCacheManager(
       GCPServiceProject gcpServiceProject,
       ApiInvoker apiInvoker,
-      ObjectMapper objectMapper) {
-    super(5, TimeUnit.MINUTES, 500); // Call the superclass constructor first
+      ObjectMapper objectMapper, SpacePlatformService platformService) {
+    super(5, TimeUnit.MINUTES, 500);
     this.gcpServiceProject = gcpServiceProject;
     this.apiInvoker = apiInvoker;
     this.objectMapper = objectMapper;
-    this.setLoader(this::loadSpaceDetails); // Set the loader after the object is initialized
+    this.platformService = platformService;
+    this.setLoader(this::loadSpaceDetails);
   }
 
-  private SpaceResponse loadSpaceDetails(String id) {
-
+  private Object loadSpaceDetails(String id) {
     log.debug("Loading space details for ID: {}", id);
-    PlatformDeploymentUnitsApi deploymentUnitsApi = new PlatformDeploymentUnitsApi();
-    Object result = apiInvoker.invoke(
-        deploymentUnitsApi.getApiClient(),
-        () -> deploymentUnitsApi.getDeploymentUnitsSpace(gcpServiceProject.getDu(), id));
+    Object result = platformService.fetchSpaceDetails();
     log.debug("Space details for ID: {} are loaded", id);
-    return objectMapper.convertValue(result, SpaceResponse.class);
+    return result;
   }
 }

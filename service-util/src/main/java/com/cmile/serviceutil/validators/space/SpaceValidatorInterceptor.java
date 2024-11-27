@@ -16,7 +16,6 @@
 
 package com.cmile.serviceutil.validators.space;
 
-import com.cmile.platform.client.model.SpaceResponse;
 import com.cmile.serviceutil.auth.RequestContext;
 import com.cmile.serviceutil.auth.jwt.ContextInfo;
 import com.cmile.serviceutil.gcp.ApplicationScopeEnum;
@@ -72,7 +71,7 @@ public class SpaceValidatorInterceptor implements HandlerInterceptor, Ordered {
           "Space in requestContext not found, please set the configs properly");
     }
     String spaceId = client.getSpaceId();
-    SpaceResponse spaceDetails = spaceCacheManager.getCache(spaceId);
+    Object spaceDetails = spaceCacheManager.getCache(spaceId);
     Optional.ofNullable(spaceDetails)
         .orElseThrow(() -> new RuntimeException(String.format("Invalid spaceId: %s", spaceId)));
 
@@ -92,6 +91,6 @@ public class SpaceValidatorInterceptor implements HandlerInterceptor, Ordered {
 
   @Override
   public int getOrder() {
-    return 1; // Set the order of the interceptor (lower value means higher priority)
+    return 1;
   }
 }
