@@ -67,7 +67,7 @@
         <bigquery.version>2.40.0</bigquery.version>
         <bigquerytransfer.version>2.44.0</bigquerytransfer.version>
         <testcontainers.gcs-server.version>0.1.0</testcontainers.gcs-server.version>
-        <swagger-annotations.version>2.2.26</swagger-annotations.version>
+        <swagger-annotations.version>2.2.22</swagger-annotations.version>
     </properties>
 
     <modules>
