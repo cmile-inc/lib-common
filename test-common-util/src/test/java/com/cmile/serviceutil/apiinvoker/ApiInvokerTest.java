@@ -1,123 +1,99 @@
-/*
- * Copyright 2024 cmile inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.cmile.serviceutil.apiinvoker;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import com.cmile.platform.client.api.PlatformDeploymentUnitsApi;
-import com.cmile.platform.client.model.SpaceResponse;
-import com.cmile.serviceutil.auth.RequestContext;
-import com.cmile.testutil.CfgApiInvokerTest;
-import com.cmile.testutil.SpaceAbstractCommonTest;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.stubbing.Scenario;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+import com.cmile.serviceutil.auth.jwt.ClientScope;
+import com.cmile.serviceutil.auth.jwt.JwtTokenProvider;
+import com.cmile.serviceutil.gcp.GCPServiceProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Mono;
 
-@SpringBootTest(classes = {CfgApiInvokerTest.class})
-public class ApiInvokerTest extends SpaceAbstractCommonTest {
-  private static final Logger logger = LoggerFactory.getLogger(ApiInvokerTest.class);
+import java.util.concurrent.Callable;
 
-  @Autowired private ApiInvoker apiInvoker;
-  @Autowired private WireMockServer wireMockServer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class ApiInvokerTest {
+
+  @Mock
+  private GCPServiceProject gcpServiceProject;
+
+  @Mock
+  private JwtTokenProvider jwtTokenProvider;
+
+  private ApiInvoker apiInvoker;
 
   @BeforeEach
-  public void setUp() {
-    wireMockServer.start();
-  }
-
-  @AfterEach
-  public void tearDown() {
-    wireMockServer.stop();
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    apiInvoker = new ApiInvoker(gcpServiceProject, jwtTokenProvider);
   }
 
   @Test
-  public void testApiInvoker_success() throws JsonProcessingException {
-    mockDUReponse();
-    PlatformDeploymentUnitsApi deploymentUnitsApi = new PlatformDeploymentUnitsApi();
-    Object result =
-        apiInvoker.invoke(
-            deploymentUnitsApi.getApiClient(),
-            () ->
-                deploymentUnitsApi.getDeploymentUnitsSpace(
-                    gcpServiceProject.getDu(),
-                    RequestContext.getRequestContextDetails().getSpaceId()));
+  void testInvoke_Success() throws Exception {
+    when(gcpServiceProject.getDomain()).thenReturn("http://test-domain.com");
+    when(gcpServiceProject.getApplicationName()).thenReturn("TestApp");
+    when(gcpServiceProject.getDu()).thenReturn("test-du");
+    when(jwtTokenProvider.createToken(
+        eq(ClientScope.SERVICE),
+        eq("TestApp"),
+        any(),
+        any(),
+        any(),
+        eq("test-du")))
+        .thenReturn("mock-token");
 
-    logger.debug(
-        "Space details for ID: {} are loaded",
-        RequestContext.getRequestContextDetails().getSpaceId());
-    SpaceResponse spaceResult = objectMapper.convertValue(result, SpaceResponse.class);
-    assertEquals(deploymentUnitSpaces().getSpaceId(), spaceResult.getSpaceId());
+    TestApiClient mockApiClient = mock(TestApiClient.class);
+    doNothing().when(mockApiClient).setBasePath("http://test-domain.com");
+    doNothing()
+        .when(mockApiClient)
+        .addDefaultHeader("Authorization", "Bearer mock-token");
+
+    Callable<Mono<String>> mockApiMethod = mock(Callable.class);
+    when(mockApiMethod.call()).thenReturn(Mono.just("Success"));
+
+    String result = apiInvoker.invoke(mockApiClient, mockApiMethod);
+
+    verify(mockApiClient).setBasePath("http://test-domain.com");
+    verify(mockApiClient).addDefaultHeader("Authorization", "Bearer mock-token");
+    assertEquals("Success", result);
   }
 
   @Test
-  public void testApiInvoker_fail() throws JsonProcessingException {
-    mockDUReponse();
+  void testInvoke_Failure() throws Exception {
+    when(gcpServiceProject.getDomain()).thenReturn("http://test-domain.com");
+    when(jwtTokenProvider.createToken(
+        eq(ClientScope.SERVICE),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()))
+        .thenReturn("mock-token");
 
-    PlatformDeploymentUnitsApi deploymentUnitsApi = new PlatformDeploymentUnitsApi();
-    String expectedErrorMessage =
-        "An error occurred while interacting with the API client. Error: An error occurred while interacting with the API client.";
+    TestApiClient mockApiClient = mock(TestApiClient.class);
+
+    Callable<Mono<String>> mockApiMethod = mock(Callable.class);
+    when(mockApiMethod.call()).thenThrow(new RuntimeException("API error"));
 
     Exception exception =
         assertThrows(
             RuntimeException.class,
-            () -> {
-              apiInvoker.invoke(
-                  deploymentUnitsApi.getApiClient(),
-                  () ->
-                      deploymentUnitsApi.getDeploymentUnitsSpace(
-                          gcpServiceProject.getDu(), "dummy")); // Space not exist
-            });
+            () -> apiInvoker.invoke(mockApiClient, mockApiMethod));
 
-    Assertions.assertTrue(exception.getMessage().contains(expectedErrorMessage));
+    assertEquals(
+        "An error occurred while interacting with the API client. Error: API error",
+        exception.getMessage());
   }
 
-  private void mockDUReponse() throws JsonProcessingException {
-    String basePathUrl = "/platform/deployment-units";
-    String getUrl =
-        String.format(
-            "/%s/spaces/%s",
-            gcpServiceProject.getDu(), RequestContext.getRequestContextDetails().getSpaceId());
+  static class TestApiClient {
+    public void setBasePath(String basePath) {
+    }
 
-    wireMockServer.stubFor(
-        get(urlPathEqualTo(basePathUrl + getUrl))
-            .inScenario("DU Management")
-            .whenScenarioStateIs(Scenario.STARTED)
-            .willReturn(
-                aResponse()
-                    .withHeader(
-                        "Content-Type", "application/json") // Set Content-Type to application/json
-                    .withBody(objectMapper.writeValueAsString(deploymentUnitSpaces()))
-                    .withStatus(HttpStatus.OK.value())));
-  }
-
-  private SpaceResponse deploymentUnitSpaces() {
-    SpaceResponse deploymentUnitSpaces = new SpaceResponse();
-    deploymentUnitSpaces.spaceId("SP01");
-    return deploymentUnitSpaces;
+    public void addDefaultHeader(String key, String value) {
+    }
   }
 }
