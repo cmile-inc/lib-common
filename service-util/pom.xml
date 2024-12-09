@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cmile.common</groupId>
         <artifactId>java-common-modules</artifactId>
-        <version>0.0.8-SNAPSHOT</version>
+        <version>0.0.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>service-util</artifactId>
@@ -54,6 +54,7 @@
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-logging-logback</artifactId>
