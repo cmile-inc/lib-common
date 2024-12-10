@@ -3,6 +3,7 @@ package com.cmile.serviceutil.spacevalidator;
 import com.cmile.serviceutil.apiinvoker.ApiInvoker;
 import com.cmile.serviceutil.gcp.GCPServiceProject;
 import com.cmile.serviceutil.validators.space.SpaceCacheManager;
+import com.cmile.serviceutil.validators.space.SpaceDetails;
 import com.cmile.serviceutil.validators.space.SpacePlatformService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,22 +44,22 @@ public class SpaceCacheManagerTest {
     @Test
     public void testLoadSpaceDetails_Success() {
         String spaceId = "test-space-id";
-        Object mockSpaceDetails = new Object();
+        SpaceDetails mockSpaceDetails = new SpaceDetails();
 
-        when(platformService.fetchSpaceDetails()).thenReturn(mockSpaceDetails);
+        when(platformService.getSpaceDetails(spaceId)).thenReturn(mockSpaceDetails);
 
         Object result = spaceCacheManager.getCache(spaceId);
         assertNotNull(result);
         assertEquals(mockSpaceDetails, result);
 
-        verify(platformService, times(1)).fetchSpaceDetails();
+        verify(platformService, times(1)).getSpaceDetails(spaceId);
     }
 
     @Test
     public void testLoadSpaceDetails_Error() {
         String spaceId = "test-space-id";
 
-        when(platformService.fetchSpaceDetails())
+        when(platformService.getSpaceDetails(spaceId))
             .thenThrow(new RuntimeException("Failed to fetch space details"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
@@ -66,6 +67,6 @@ public class SpaceCacheManagerTest {
         });
 
         assertEquals("Failed to fetch space details", exception.getMessage());
-        verify(platformService, times(1)).fetchSpaceDetails();
+        verify(platformService, times(1)).getSpaceDetails(spaceId);
     }
 }

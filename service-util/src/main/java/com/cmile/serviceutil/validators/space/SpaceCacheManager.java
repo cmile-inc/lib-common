@@ -48,9 +48,9 @@ public class SpaceCacheManager extends CacheManager<String, Object> {
     this.setLoader(this::loadSpaceDetails);
   }
 
-  private Object loadSpaceDetails(String id) {
+  private SpaceDetails loadSpaceDetails(String id) {
     log.debug("Loading space details for ID: {}", id);
-    Object result = platformService.fetchSpaceDetails();
+    SpaceDetails result = platformService.getSpaceDetails(id);
     log.debug("Space details for ID: {} are loaded", id);
     return result;
   }
