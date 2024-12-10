@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class SpaceDetails {
   private String spaceId;
-  private Map<String, ?> spaceDetails;
+  private Map<String, ?> details;
 }
