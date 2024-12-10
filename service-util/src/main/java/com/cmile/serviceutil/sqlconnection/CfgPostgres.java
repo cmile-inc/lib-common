@@ -23,6 +23,7 @@ import com.cmile.serviceutil.secret.CfgSecret;
 import com.cmile.serviceutil.secret.SecretManagerService;
 import com.cmile.serviceutil.sqlconnection.migration.LiquibaseService;
 import liquibase.integration.spring.SpringLiquibase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +41,7 @@ import javax.sql.DataSource;
 @Import({ CfgGCPProject.class, CfgSecret.class })
 public class CfgPostgres {
 
+    @Autowired
     private final DatasourceProperties datasourceProperties;
 
     public CfgPostgres(DatasourceProperties datasourceProperties) {
@@ -108,12 +110,6 @@ public class CfgPostgres {
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
         return new HibernateJpaVendorAdapter();
-    }
-
-    @Bean
-    public LiquibaseService liquibaseService(
-            GCPServiceProject gcpServiceProject, SecretManagerService secretManagerService) {
-        return new LiquibaseService(gcpServiceProject, secretManagerService);
     }
 
     @Bean
