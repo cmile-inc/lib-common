@@ -28,21 +28,36 @@ import com.cmile.testutil.pubsub.PubSubServiceTest;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
+import liquibase.integration.spring.SpringLiquibase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
+import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
 
 import java.io.IOException;
 import java.util.UUID;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = {CfgTestPubSubStimulate.class, CfgMetricRegistryTest.class, FrMessageReceiver.class})
+@EnableAutoConfiguration(exclude = {TaskSchedulingAutoConfiguration.class, LiquibaseAutoConfiguration.class, DataSourceAutoConfiguration.class})
 @EnableIntegration
+@TestPropertySource(
+    properties = {
+        "spring.cloud.gcp.pubsub.executor.max-inbound-threads=100", // Adjust the number of threads
+        "spring.cloud.gcp.pubsub.executor.max-outbound-threads=100", // Adjust the number of threads
+        "spring.integration.poller.max-messages-per-poll=5",
+        "spring.integration.poller.fixed-delay=1000"
+    }
+)
 public class FrMessageReceiverIntegrationTest extends SpaceAbstractCommonTest {
 
     @Autowired
