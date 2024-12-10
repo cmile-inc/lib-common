@@ -16,8 +16,12 @@
 
 package com.cmile.testutil;
 
+import com.cmile.serviceutil.apiinvoker.ApiInvoker;
 import com.cmile.serviceutil.auth.jwt.JwtTokenProvider;
+import com.cmile.serviceutil.gcp.GCPServiceProject;
 import com.cmile.serviceutil.validators.space.CfgSpaceValidator;
+import com.cmile.serviceutil.validators.space.SpaceCacheManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,5 +49,11 @@ public class CfgSpaceValidatorTest {
 
     private String serviceClientJwtToken() {
         return "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxZjFkZTY1YS01NjI0LTRjYzMtYWViNy1hNzRiMTNlZDk4NzQiLCJpc3MiOiJodHRwczovL2FwaS5jbWlsZS5jb20vdG9rZW4vIiwiaWF0IjoxNzI5ODMzMTA1LCJleHAiOjE3Mjk4MzY3MDV9.DuYyehXmCMpsuXMkeza7GX5twSKsCqWrZB1OhGkyfXc7Q2pFk3DBwLC6JaskhO15MQJsSM2b9UWRe1Lqy7az8DS7nWs-oQov-FOWNmsOu0aqGeG1rrRjp1erY4Y50qNoFzsm6VUCfpeoHyImvCiydL21wkou8vyXSrMWWirwekWSBEo99r-Q-dU3gDxDXP7IJTu-lZSKuWPKwzTpOV08CePASe8j1GmtzpEOGt2mOw8w7DgIBZCu2LqWjPbrVEEcqCyUbyQnHj8VQMjj3e5WFyMI8Zf40HDUUmL8x3E_5L-SdVNtYLnKXVR233erc36L85bRUCg2lS3WsqDsCfNWkA";
+    }
+
+    @Bean
+    public SpaceCacheManager spaceCacheManager(@Autowired GCPServiceProject gcpServiceProject, @Autowired
+        ObjectMapper objectMapper, @Autowired ApiInvoker apiInvoker) {
+            return new SpaceCacheManager(gcpServiceProject, apiInvoker, objectMapper, new SpacePlatformServiceImpl());
     }
 }

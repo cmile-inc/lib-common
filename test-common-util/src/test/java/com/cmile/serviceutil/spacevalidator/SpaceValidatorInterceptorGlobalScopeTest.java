@@ -20,6 +20,7 @@ import com.cmile.serviceutil.validators.space.SpaceCacheManager;
 import com.cmile.serviceutil.validators.space.SpaceValidatorInterceptor;
 import com.cmile.testutil.AbstractCommonTest;
 import com.cmile.testutil.CfgSpaceValidatorTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,18 +28,20 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(classes = {CfgSpaceValidatorTest.class})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 public class SpaceValidatorInterceptorGlobalScopeTest extends AbstractCommonTest {
 
     @Autowired
-    private SpaceCacheManager spaceCacheManager;
+    private SpaceValidatorInterceptor spaceValidatorInterceptor;
 
     @Autowired
-    private SpaceValidatorInterceptor spaceValidatorInterceptor;
+    private SpaceCacheManager spaceCacheManager;
 
     @Test
     public void testSpaceInterceptor_GlobalDoNotSetInterceptor() throws IOException {
