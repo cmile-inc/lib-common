@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.cmile.common</groupId>
-        <artifactId>java-common-modules</artifactId>
+        <artifactId>java-common</artifactId>
         <version>0.0.10-SNAPSHOT</version>
     </parent>
 
-    <artifactId>test-common-util</artifactId>
+    <artifactId>common-test-util</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
