@@ -132,6 +132,45 @@ To use the PostgreSQL utilities, you need to configure and instantiate the `Post
 - **LiquibaseService**: Service for managing database migrations using Liquibase.
   - [LiquibaseService.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/sqlconnection/migration/LiquibaseService.java)
 
+#### Example
+
+```java
+
+// Including the CfgAuth to the main configuration class will automatically enable JWT Authentication
+
+
+import com.cmile.serviceutil.common.CfgCommon;
+import com.cmile.serviceutil.sqlconnection.CfgPostgres;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+@Import({
+        CfgCommon.class,
+        CfgPostgres.class
+})
+class AppConfig {
+
+}
+
+//Repository
+interface TestRepository extends JpaRepository<Object, String> {
+
+}
+
+//DAO
+class TestDAO {
+
+  @Autowired
+  TestRepository testRepository;
+  
+  public void save() {
+    testRepository.save(new Object());
+  }
+}
+
+
+```
+
 ### GCP Secret Manager
 
 To use the GCP Secret Manager utilities, you need to configure and instantiate the `SecretManagerService` class.
@@ -146,12 +185,66 @@ To use the GCP Storage utilities, you need to configure and instantiate the `Gcp
 - **GcpCloudStorageService**: Service for managing files in GCP Cloud Storage.
   - [GcpCloudStorageService.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/storage/GcpCloudStorageService.java)
 
+#### Example
+
+```java
+
+import com.cmile.serviceutil.common.CfgCommon;
+import com.cmile.serviceutil.storage.CfgStorage;
+
+@Import({
+        CfgCommon.class,
+        CfgStorage.class
+})
+class AppConfig {
+
+}
+
+class TestGcpStorage {
+
+  @Autowired
+  private GcpCloudStorageService gcpCloudStorageService;
+
+  public void saveFileToGcp() {
+    gcpCloudStorageService.createBucket();
+    // Similary have public methods to upload file etc. The class can be referred for the methods available
+  }
+}
+
+
+```
+
 ### Logging
 
 To use the logging utilities, you need to configure and instantiate the `CfgLogging` class.
 
 - **CfgLogging**: Configuration class for setting up logging.
   - [CfgLogging.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/logging/CfgLogging.java)
+
+### Auth
+
+To use jwt authentication, you need to configure and instantiate `CfgAuth` class.
+
+- **CfgAuth**: Configuration class for setting up logging.
+  - [CfgAuth.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/auth/CfgAuth.java)
+
+#### Example
+
+```java
+
+// Including the CfgAuth to the main configuration class will automatically enable JWT Authentication
+
+
+import com.cmile.serviceutil.auth.CfgAuth;
+
+@Import({
+        CfgAuth.class,
+        CfgCommon.class
+})
+class AppConfig {
+
+}
+```
 
 ## Contributing
 
