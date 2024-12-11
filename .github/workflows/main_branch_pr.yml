@@ -12,11 +12,11 @@ jobs:
 
     steps:
     - name: Check if PR is from a feature or release branch
-      if: github.event.pull_request.base.ref == 'develop'
+      if: github.event.pull_request.base.ref == 'main'
       run: |
         PR_BRANCH=${{ github.event.pull_request.head.ref }}
         if [[ $PR_BRANCH != feature/* && $PR_BRANCH != release/* ]]; then
-          echo "Error: Only branches starting with 'feature/' or 'release/' can be merged into 'develop'."
+          echo "Error: Only branches starting with 'feature/' or 'release/' can be merged into 'main'."
           exit 1
         fi
 
