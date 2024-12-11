@@ -16,6 +16,11 @@
 
 package com.cmile.serviceutil.validators.space;
 
-public interface SpacePlatformService {
-    SpaceDetails getSpaceDetails(String spaceId);
+import java.util.Map;
+import lombok.Data;
+
+@Data
+public class SpaceDetails {
+  private String spaceId;
+  private Map<String, ?> details;
 }
