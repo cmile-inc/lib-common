@@ -1,6 +1,13 @@
 # com.cmile.common.service-util
 
+## Overview
+The com.cmile.common.service-util library provides utilities for working with various services and features. 
+Each feature includes classes prefixed with Cfg for easy configuration. Below are instructions for setting 
+up and using different utilities in your projects.
+
 ## Usage
+To incorporate a feature, include its respective configuration class (e.g., CfgPostgres) in your main configuration class, 
+then follow the setup instructions for that feature.
 
 ### BigQuery
 
