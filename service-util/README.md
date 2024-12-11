@@ -33,6 +33,41 @@ To use the MongoDB utilities, you need to configure and instantiate the `Dynamic
 
 - **AtlasMongoDbService**: Service for managing MongoDB collections and users in MongoDB Atlas.
   - [AtlasMongoDbService.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/mongo/AtlasMongoDbService.java)
+
+#### Example
+
+```java
+
+//This will register the required beans for mongo connection
+import com.cmile.serviceutil.mongo.CfgMongo;
+
+@Import({
+    CfgMongo.class,
+    CfgCommon.class
+})
+class AppConfig {
+
+}
+
+
+@Repository
+public class ItemDataRepositoryImpl implements ItemDataRepository {
+
+  private final DynamicMongoTemplate dynamicMongoTemplate;
+
+  @Autowired
+  public ItemDataRepositoryImpl(
+      DynamicMongoTemplate dynamicMongoTemplate) {
+    this.dynamicMongoTemplate = dynamicMongoTemplate;
+  }
+
+  @Override
+  public ItemDocument saveDocument(Item doc) {
+    dynamicMongoTemplate.getMongoTemplate().save(doc);
+    return doc;
+  }
+}
+```
   
 ### API Invoker
 
@@ -40,6 +75,45 @@ To use the API invoker utilities, you need to configure and instantiate the rele
 
 - **ApiInvokerService**: Service for invoking external APIs.
   - [ApiInvokerService.java](lib-common/service-util/src/main/java/com/cmile/serviceutil/apiinvoker/ApiInvokerService.java)
+
+#### Example
+
+```java
+
+import com.cmile.serviceutil.apiinvoker.CfgApiInvoker;
+import com.cmile.serviceutil.mongo.CfgMongo;
+
+@Import({
+        CfgApiInvoker.class,
+        CfgCommon.class
+})
+class AppConfig {
+
+}
+
+
+//Webclient class
+class ExternalApiClient {
+  public Mono<?> getAllInfo(Integer from, Integer size) throws WebClientResponseException {
+    ParameterizedTypeReference<?> localVarReturnType = new ParameterizedTypeReference<?>() {};
+    return getAllInfo(from, size).bodyToMono(localVarReturnType);
+  }
+
+}
+
+@Service
+public class ExternalApiCallExample {
+
+  private Result loadSpaceDetails(String id) {
+    ExternalApiClient externalApiClient = new ExternalApiClient();
+    Object result = apiInvoker.invoke(
+            ExternalApiClient.getApiClient(),
+            () -> externalApiClient.getAllInfo("id", id));
+    
+    return result;
+  }
+}
+```
 
 ### Metrics
 
