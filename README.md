@@ -8,12 +8,12 @@ The `lib-common` project provides a comprehensive set of utilities and a test fr
 
 The `service-util` directory contains the main utilities and service implementations. Below is a detailed description of the key components.
 
-## Overview
+### Overview
 The com.cmile.common.service-util library provides utilities for working with various services and features. 
 Each feature includes classes prefixed with Cfg for easy configuration. Below are instructions for setting 
 up and using different utilities in your projects.
 
-## Usage
+### Usage
 To incorporate a feature, include its respective configuration class (e.g., CfgPostgres) in your main configuration class, 
 then follow the setup instructions for that feature.
 
