@@ -1,10 +1,10 @@
-name: Main Branch CI
+name: Develop Branch CI
 
 on:
   workflow_dispatch:
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
   check_branch_name:
@@ -12,11 +12,11 @@ jobs:
 
     steps:
     - name: Check if PR is from a feature or release branch
-      if: github.event.pull_request.base.ref == 'main'
+      if: github.event.pull_request.base.ref == 'develop'
       run: |
         PR_BRANCH=${{ github.event.pull_request.head.ref }}
         if [[ $PR_BRANCH != feature/* && $PR_BRANCH != release/* && $PR_BRANCH != dependabot/* ]]; then
-          echo "Error: Only branches starting with 'feature/' or 'release/' can be merged into 'main'."
+          echo "Error: Only branches starting with 'feature/' or 'release/' can be merged into 'develop'."
           exit 1
         fi
 
