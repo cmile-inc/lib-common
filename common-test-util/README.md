@@ -1,6 +1,6 @@
-# test-common-util
+# common-test-util
 
-The `test-common-util` package provides a set of utilities and configurations for constructing test cases against various services such as MongoDB, PostgreSQL, GCP Storage, GCP Secret Manager, and more. These utilities are designed to facilitate the setup and execution of tests in a consistent and efficient manner.
+The `common-test-util` package provides a set of utilities and configurations for constructing test cases against various services such as MongoDB, PostgreSQL, GCP Storage, GCP Secret Manager, and more. These utilities are designed to facilitate the setup and execution of tests in a consistent and efficient manner.
 
 ## Project Structure
 
@@ -9,27 +9,27 @@ The `test-common-util` package provides a set of utilities and configurations fo
 The configuration classes in this package help set up the necessary environment for testing different services.
 
 - **CfgPostgresTest**: Configuration class for setting up PostgreSQL tests.
-  - [CfgPostgresTest.java](lib-common/test-common-util/src/main/java/com/cmile/testutil/CfgPostgresTest.java)
+  - [CfgPostgresTest.java](lib-common/common-test-util/src/main/java/com/cmile/testutil/CfgPostgresTest.java)
 
 - **CfgMongoTest**: Configuration class for setting up MongoDB tests.
-  - [CfgMongoTest.java](lib-common/test-common-util/src/main/java/com/cmile/testutil/CfgMongoTest.java)
+  - [CfgMongoTest.java](lib-common/common-test-util/src/main/java/com/cmile/testutil/CfgMongoTest.java)
 
 - **CfgSecretTest**: Configuration class for setting up GCP Secret Manager tests.
-  - [CfgSecretTest.java](lib-common/test-common-util/src/main/java/com/cmile/testutil/CfgSecretTest.java)
+  - [CfgSecretTest.java](lib-common/common-test-util/src/main/java/com/cmile/testutil/CfgSecretTest.java)
 
 - **CfgPubSubTest**: Configuration class for setting up Pub/Sub tests.
-  - [CfgPubSubTest.java](lib-common/test-common-util/src/main/java/com/cmile/testutil/CfgPubSubTest.java)
+  - [CfgPubSubTest.java](lib-common/common-test-util/src/main/java/com/cmile/testutil/CfgPubSubTest.java)
 
 ### Test Classes
 
 The test classes in this package provide example test cases and utilities for testing various services.
 
 - **GcpCloudStorageServiceTest**: Test class for `GcpCloudStorageService`.
-  - [GcpCloudStorageServiceTest.java](lib-common/test-common-util/src/test/java/com/cmile/serviceutil/storage/GcpCloudStorageServiceTest.java)
+  - [GcpCloudStorageServiceTest.java](lib-common/common-test-util/src/test/java/com/cmile/serviceutil/storage/GcpCloudStorageServiceTest.java)
 
 ## Usage
 
-To use the test utilities, you need to include the `test-common-util` package in your test dependencies and configure the necessary test classes.
+To use the test utilities, you need to include the `common-test-util` package in your test dependencies and configure the necessary test classes.
 
 ### PostgreSQL
 
