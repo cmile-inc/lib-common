@@ -36,15 +36,19 @@ jobs:
       - name: Configure Maven settings
         run: |
           mkdir -p ~/.m2
-          echo "<settings><servers><server><id>central</id><username>${{ secrets.SONATYPE_USER }}</username><password>${{ secrets.SONATYPE_PASSWORD}}</password></server></servers></settings>" > ~/.m2/settings.xml
+          echo "<settings><servers><server><id>central</id><username>${{ secrets.SONATYPE_USER }}</username><password>${{ secrets.SONATYPE_PASSWORD}}</password></server></servers><profiles><profile><id>signing</id><properties><gpg.executable>gpg</gpg.executable><gpg.passphrase>${{ secrets.GPG_PASSPHRASE }}</gpg.passphrase></properties></profile></profiles></settings>" > ~/.m2/settings.xml
 
       - name: Build with Maven
-        run: mvn -B clean install --file pom.xml -Psigning -Dgpg.keyname=DE33EA173AED823B7D0AB0750E0DBDC3E926C81F -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          mvn versions:set -DnewVersion=1.0.0.Build-${{ github.run_number }}
+          mvn -B clean install --file pom.xml -Psigning -Dgpg.keyname=DE33EA173AED823B7D0AB0750E0DBDC3E926C81F -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ../cert/test.json
           PROJECT_ID: test-cmile-project
 
       - name: Publish Versioned Package
         run: |
-          mvn versions:set -DnewVersion=1.0.0.Build-${{ github.run_number }}
           mvn -B deploy -DskipTests -Psigning -Dgpg.keyname=DE33EA173AED823B7D0AB0750E0DBDC3E926C81F -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ../cert/test.json
+          PROJECT_ID: test-cmile-project
