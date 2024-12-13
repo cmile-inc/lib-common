@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>common-test-util</artifactId>
-<description>A set of common java utilities that can be used as an entry point for creating integrations with GCP services including authentication, bigquery, logging, cache management, secretmanager, pub/sub, postgresql, storage, metrics and mongo.  There is also a test framework for producing JUnit test cases using testcontainers to mock external services.</description>
-    <url>https://github.com/cmile-inc/lib-common</url>
+    <description>A set of common java utilities that can be used as an entry point for creating integrations with GCP services including authentication, bigquery, logging, cache management, secretmanager, pub/sub, postgresql, storage, metrics and mongo.  There is also a test framework for producing JUnit test cases using testcontainers to mock external services.</description>
+    <url>https://cmile.com</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -169,6 +169,33 @@
 
     </dependencies>
     <build>
-
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
