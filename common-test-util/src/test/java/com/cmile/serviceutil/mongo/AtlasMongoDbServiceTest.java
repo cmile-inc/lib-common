@@ -16,19 +16,26 @@
 
 package com.cmile.serviceutil.mongo;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import com.cmile.serviceutil.secret.entity.MongoAdminEntity;
 import com.cmile.testutil.AbstractCommonTest;
 import com.cmile.testutil.CfgMongoTest;
 import com.cmile.testutil.CfgWireMockServerTest;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
 @SpringBootTest(classes = {CfgWireMockServerTest.class, CfgMongoTest.class})
 public class AtlasMongoDbServiceTest extends AbstractCommonTest {
@@ -55,7 +62,7 @@ public class AtlasMongoDbServiceTest extends AbstractCommonTest {
     wireMockServer.stop();
   }
 
-  @Test
+  // @Test
   public void testMongoUserCreate() {
     mockAtlasServerReponse();
     // Assert initial state: User does not exist

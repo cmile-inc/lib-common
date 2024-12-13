@@ -82,7 +82,7 @@
     <dependencies>
         <dependency>
             <groupId>com.cmile.common</groupId>
-            <artifactId>service-util</artifactId>
+            <artifactId>common-service-util</artifactId>
             <version>${project.version}</version>
         </dependency>
 

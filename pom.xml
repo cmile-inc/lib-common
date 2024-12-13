@@ -117,7 +117,6 @@
         <springboot-mongo.version>3.3.2</springboot-mongo.version>
         <postgress.version>42.7.3</postgress.version>
         <spotless-formatter.version>2.24</spotless-formatter.version>
-        <service-platform-api.version>1.0-SNAPSHOT</service-platform-api.version>
         <mockito-inline-version>5.2.0</mockito-inline-version>
         <auth0.version>4.2.1</auth0.version>
         <swagger-models.version>2.2.22</swagger-models.version>
@@ -134,8 +133,8 @@
     </properties>
 
     <modules>
-        <module>service-util</module>
-        <module>test-common-util</module>
+        <module>common-service-util</module>
+        <module>common-test-util</module>
     </modules>
 
     <build>

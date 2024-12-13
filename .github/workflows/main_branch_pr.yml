@@ -45,7 +45,7 @@ jobs:
           echo "<settings><servers><server><id>central</id><username>${{ secrets.SONATYPE_USER }}</username><password>${{ secrets.SONATYPE_PASSWORD}}</password></server></servers><profiles><profile><id>signing</id><properties><gpg.executable>gpg</gpg.executable><gpg.passphrase>${{ secrets.GPG_PASSPHRASE }}</gpg.passphrase></properties></profile></profiles></settings>" > ~/.m2/settings.xml
 
       - name: Build with Maven
-        run: mvn -B clean package --file pom.xml
+        run: mvn -B clean package --file pom.xml -Psigning
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ../cert/test.json
           PROJECT_ID: test-cmile-project
